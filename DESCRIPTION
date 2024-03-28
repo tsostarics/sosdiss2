@@ -1,0 +1,27 @@
+Package: sosdiss2
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Author: Who wrote it
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    brms,
+    dplyr,
+    ggdist,
+    ggnewscale,
+    ggplot2,
+    here,
+    MASS,
+    modelr,
+    posterior,
+    rlang,
+    stringr,
+    tidybayes,
+    tidyr,
+    tidyselect
+RoxygenNote: 7.2.3
