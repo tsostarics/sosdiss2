@@ -11,10 +11,12 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     brms,
+    broom.mixed,
     dplyr,
     ggdist,
     ggnewscale,
     ggplot2,
+    glue,
     here,
     MASS,
     modelr,

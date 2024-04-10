@@ -28,7 +28,18 @@ posterior_as_new_prior_dists <- function(bmdl, scale = 1, shift_to_zero = FALSE)
   # so that we can pass it in as an individual argument to a prior() call
   par_classes <- stringr::str_match(model_parameters, "^(b|sd)_?")[,2]
   par_groups  <- stringr::str_match(model_parameters, "^(b|sd)_(.+(?!=__))__")[,3]
-  par_dpars   <- stringr::str_match(model_parameters, "__(.+(?!=_))_.+$")[,2]
+
+  # We need to check for distributional parameters using a nonexported helper,
+  # otherwise we run into issues when coefficient names have underscores.
+  par_dpars <- model_parameters[NA]
+  valid_dpars <- utils::getFromNamespace('valid_dpars', 'brms')
+  formula_dpars <- valid_dpars(bmdl)
+  formula_dpars <- formula_dpars[formula_dpars != "mu"] # mu isn't specified, only things like disc or sigma
+  if (length(formula_dpars) > 0) {
+    dpar_pattern <- paste0("__(", paste0(formula_dpars, collapse = "|"), ")")
+    par_dpars   <- stringr::str_match(model_parameters, dpar_pattern)[,2]
+  }
+
 
   # Given the parts we extracted, go from left to right in the full name and
   # remove each part we no longer need. The remaining piece is the coef name.
