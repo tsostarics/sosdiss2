@@ -38,7 +38,7 @@ model_to_latex_switch <- function(model,
                                   add_found_boolean = TRUE) {
   model |>
     process_model_coef_df(roundto, remove_parens) |>
-    make_latex_switch(macroname, fstring, add_found_boolean)
+    make_latex_switch(macroname, fstring, remove_parens, add_found_boolean)
 }
 
 #' Process model coefficients
