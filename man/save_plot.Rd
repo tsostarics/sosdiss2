@@ -4,14 +4,30 @@
 \alias{save_plot}
 \title{Save plot helper}
 \usage{
-save_plot(p, filename, dpi = 1200, ...)
+save_plot(
+  p,
+  filename,
+  rootdir = "Figures",
+  dpi = 1200,
+  use_subfolders = FALSE,
+  ...
+)
 }
 \arguments{
 \item{p}{Plot}
 
 \item{filename}{String, filename to use, no file extension}
 
+\item{rootdir}{Directory to save files to, defaults to Figures. If this does
+not already exist it will be created. You can set this to a subdirectory
+so that when you set `use_subfolders` to TRUE it will create the correct
+subfolders where you want them.}
+
 \item{dpi}{integer, dpi to use for png file}
+
+\item{use_subfolders}{Logical, defaults to FALSE, if TRUE will create
+pdf, png, and svg subfolders in the Figures/ directory and save each figure
+to the appropriate subdirectory. Useful when you have a LOT of figures.}
 
 \item{...}{Additional names parameters to pass}
 }
@@ -24,5 +40,6 @@ Recommended to use `ggview` to settle on the appropriate width, height, and
 scale, then pass the parameters to this function
 }
 \details{
-Assumes a `Figures/` directory in the current working directory
+Default behavrior is to create a `Figures/` directory in the current working
+directory.
 }
