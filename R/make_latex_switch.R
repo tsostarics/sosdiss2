@@ -118,7 +118,7 @@ make_latex_switch <- function(model_coef_df,
     c(
       starting_lines,
       r"(\setboolean{found}{false})",
-      paste0(r"(\NewDocumentCommand \)", macroname, r"({ v })"),
+      paste0(r"(\NewDocumentCommand \)", macroname, r"({ m })"), # {m} see https://tex.stackexchange.com/questions/644668/latex3-verbatim-like-command-illegal-in-argument
       r"(  {)",
       r"(    \str_case_e:nn { \str_foldcase:e { #1 } })",
       r"(      {)")
