@@ -59,6 +59,14 @@ process_model_coef_df <- function(model, roundto = 2, remove_parens=TRUE) {
   # Process the model coefficients, rounding the numeric values as needed
   mdl_coef_df <- suppressWarnings(broom.mixed::tidy(model, effects = "fixed"))
   mdl_coef_df[['estimate']] <- round(mdl_coef_df[['estimate']], roundto)
+
+  # If the confidence intervals aren't returned for non-bayesian models, just
+  # make sure to create them.
+  if (!"conf.high" %in% colnames(mdl_coef_df)) {
+    mdl_coef_df[['conf.low']] <- mdl_coef_df[['estimate']] - 1.96 * mdl_coef_df[['std.error']]
+    mdl_coef_df[['conf.high']] <- mdl_coef_df[['estimate']] + 1.96 * mdl_coef_df[['std.error']]
+  }
+
   mdl_coef_df[['conf.low']] <- round(mdl_coef_df[['conf.low']], roundto)
   mdl_coef_df[['conf.high']] <- round(mdl_coef_df[['conf.high']], roundto)
 
@@ -106,8 +114,7 @@ make_latex_switch <- function(model_coef_df,
   stopifnot(length(macroname) == 1L)
 
   # Set up the start of the command with the expl3 lines
-  starting_lines <-
-    c(r"(\ExplSyntaxOn)")
+  starting_lines <- c(r"(\ExplSyntaxOn)")
 
   # Base case is handled by a boolean called "found", if we have already defined
   # this elsewhere then we can omit it as needed
