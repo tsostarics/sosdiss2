@@ -57,22 +57,13 @@ model_to_latex_switch <- function(model,
 #' @export
 process_model_coef_df <- function(model, roundto = 2, remove_parens=TRUE) {
   # Process the model coefficients, rounding the numeric values as needed
-  mdl_coef_df <- suppressWarnings(broom.mixed::tidy(model, effects = "fixed"))
-  mdl_coef_df[['estimate']] <- round(mdl_coef_df[['estimate']], roundto)
-
-  # If the confidence intervals aren't returned for non-bayesian models, just
-  # make sure to create them.
-  if (!"conf.high" %in% colnames(mdl_coef_df)) {
-    mdl_coef_df[['conf.low']] <- mdl_coef_df[['estimate']] - 1.96 * mdl_coef_df[['std.error']]
-    mdl_coef_df[['conf.high']] <- mdl_coef_df[['estimate']] + 1.96 * mdl_coef_df[['std.error']]
-  }
-
-  mdl_coef_df[['conf.low']] <- round(mdl_coef_df[['conf.low']], roundto)
+  mdl_coef_df <- suppressWarnings(broom.mixed::tidy(model, effects = "fixed", conf.int=TRUE))
+  mdl_coef_df[['estimate']]  <- round(mdl_coef_df[['estimate']], roundto)
+  mdl_coef_df[['conf.low']]  <- round(mdl_coef_df[['conf.low']], roundto)
   mdl_coef_df[['conf.high']] <- round(mdl_coef_df[['conf.high']], roundto)
 
   # The : character isn't allowed, so we'll switch to i for interaction
   mdl_coef_df[['term']] <- casefold(gsub(":", "i", mdl_coef_df[['term']]))
-
 
   # If we want to remove parentheses from, eg, the intercept term, do so
   if (remove_parens)
