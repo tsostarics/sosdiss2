@@ -125,7 +125,7 @@ make_latex_switch <- function(model_coef_df,
   # Take the formatted string from the user and embed it within the syntax
   # needed for the conditional statements
   fstring <- paste0(
-    "        {{ {term} }} {{ \\setboolean{{found}}{{true}} ", fstring, " }}")
+    "        {{ {term} }} {{ ", fstring, " \\setboolean{{found}}{{true}} }}")
 
   # Take the full formatted string and inject the model values
   mdl_lines <- glue::glue(fstring, .envir = model_coef_df)
