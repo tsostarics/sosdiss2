@@ -21,9 +21,7 @@ flag_trial_outliers <- function(data,
                                 rt_threshold = 1500,
                                 rd_threshold = 40) {
   dplyr::mutate(ungroup(data),
-                rt_max = exp(quantile(logrt, .75) + 3 *IQR(logrt)),
-                rt_min = exp(quantile(logrt, .25) - 3 * IQR(logrt)),
-                is_outlier = rt > rt_max | rt > rt_threshold | rd < rd_threshold | rt < rt_min,
+                is_outlier = rt < 200 | rt > rt_threshold | rd < rd_threshold,
                 .by = all_of(by))
 }
 

@@ -18,17 +18,34 @@
 #' not already exist it will be created. You can set this to a subdirectory
 #' so that when you set `use_subfolders` to TRUE it will create the correct
 #' subfolders where you want them.
+#' @param img_type character vector of image file types to save. Defaults
+#' to c("pdf", "png", "svg"). Usually used to save only png files of
+#' diagnostic plots that dont need vector versions.
+#' @param .skip_save Logical, whether to skip saving the plot. Useful if you're
+#' rerunning a script or rmd/qmd doc and don't want to re-save plots. You can
+#' also use `option(SOSDISS2_SKIP_PLOT_SAVE = FALSE)` to set this globally for
+#' the current session.
 #'
 #' @return Invisibly returns the paths to the saved plots
 #' @export
-save_plot <- function(p, filename, rootdir = "Figures", dpi = 1200, use_subfolders=FALSE, ...) {
+save_plot <- function(p,
+                      filename,
+                      rootdir = "Figures",
+                      dpi = getOption("SOSDISS2_DPI"),
+                      use_subfolders=TRUE,
+                      ...,
+                      img_type = c("pdf", "png", "svg"),
+                      .skip_save = getOption("SOSDISS2_SKIP_PLOT_SAVE")) {
+
+  stopifnot(all(img_type %in% c("pdf", "png", "svg")))
+
 
   if (!dir.exists(here::here(rootdir)))
     dir.create(here::here(rootdir))
 
   if (use_subfolders) {
     # Ensure the subfolders exist before we try to write to them
-    for (ext in c("pdf", "png", "svg")) {
+    for (ext in img_type) {
       if (!dir.exists(file.path(here::here(rootdir), ext)))
         dir.create(file.path(here::here(rootdir), ext))
     }
@@ -37,16 +54,21 @@ save_plot <- function(p, filename, rootdir = "Figures", dpi = 1200, use_subfolde
     plot_path <- \(ext) file.path(here::here(rootdir), paste0(filename, ".", ext))
   }
 
+  if (!.skip_save) {
+
   # Save SVG file
+  if ("svg" %in% img_type)
   ggplot2::ggsave(plot = p, filename = plot_path("svg"),
                   device = grDevices::svg,
                   ...)
   # Save PDF file
+  if("pdf" %in% img_type)
   ggplot2::ggsave(plot = p, filename = plot_path("pdf"),
                   device = grDevices::cairo_pdf,
                   ...)
   # grDevices::dev.off() # Closes devices so we can resume plotting in main session
 
+  if ("png" %in% img_type)
   # Save PNG file
   rlang::inject(
     ggplot2::ggsave(plot = p, filename = plot_path("png"),
@@ -54,8 +76,9 @@ save_plot <- function(p, filename, rootdir = "Figures", dpi = 1200, use_subfolde
                     # We need to use the cairo png device, which requires
                     # passing type = 'cairo' to the graphics device via ...
                     ...=!!!c(type = "cairo", rlang::dots_list(...))))
+  }
 
-  invisible(vapply(c('svg','pdf','png'), plot_path, "char"))
+  invisible(vapply(img_type, plot_path, "char"))
 }
 
 #' A function to crop white margins of a PNG image
@@ -132,7 +155,7 @@ save_ppcheck <- function(mdl,
                          ...) {
   p <- rlang::inject(brms::pp_check(mdl, ndraws = 100, ...=!!!pp_options)) + theme(legend.position = 'top')
 
-  save_plot(p, filename, ...)
+  save_plot(p, filename, rootdir = "Figures/ppchecks",use_subfolders = TRUE, ...)
   if (show)
     p
 }

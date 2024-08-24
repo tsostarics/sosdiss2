@@ -47,3 +47,7 @@ utils::globalVariables(
   )
 )
 
+.onLoad <- function(libname, pkgname){
+  options(SOSDISS2_SKIP_PLOT_SAVE = FALSE)
+  options(SOSDISS2_DPI = 300)
+}

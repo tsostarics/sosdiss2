@@ -7,8 +7,10 @@
 plot_posterior_rt_draws2(
   condition_difference_draws,
   scale = 1.2,
+  slab_scale = 1,
   facet_labels = c(lower = "Hear tough, see impossible", higher =
     "Hear impossible, see tough"),
+  debug_red = FALSE,
   ...
 )
 }
@@ -17,7 +19,15 @@ plot_posterior_rt_draws2(
 
 \item{scale}{Scale factor for plot output, default 1.2}
 
+\item{slab_scale}{Numeric, default 1, change to adjust the scaling of the
+red slabs. Needed to match the gray ones manually, but the exact value changes
+depending on the number of reds.}
+
 \item{facet_labels}{Labels for the condition facets, set NULL to exclude.}
+
+\item{debug_red}{Logical, default FALSE, if TRUE will overlay the red slabs
+over gray slabs. Use to check that the scaling works correctly and adjust
+slab_scale as needed to fix.}
 
 \item{...}{Not used}
 }

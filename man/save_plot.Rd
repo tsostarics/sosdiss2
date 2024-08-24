@@ -8,9 +8,11 @@ save_plot(
   p,
   filename,
   rootdir = "Figures",
-  dpi = 1200,
-  use_subfolders = FALSE,
-  ...
+  dpi = getOption("SOSDISS2_DPI"),
+  use_subfolders = TRUE,
+  ...,
+  img_type = c("pdf", "png", "svg"),
+  .skip_save = getOption("SOSDISS2_SKIP_PLOT_SAVE")
 )
 }
 \arguments{
@@ -30,6 +32,15 @@ pdf, png, and svg subfolders in the Figures/ directory and save each figure
 to the appropriate subdirectory. Useful when you have a LOT of figures.}
 
 \item{...}{Additional names parameters to pass}
+
+\item{img_type}{character vector of image file types to save. Defaults
+to c("pdf", "png", "svg"). Usually used to save only png files of
+diagnostic plots that dont need vector versions.}
+
+\item{.skip_save}{Logical, whether to skip saving the plot. Useful if you're
+rerunning a script or rmd/qmd doc and don't want to re-save plots. You can
+also use `option(SOSDISS2_SKIP_PLOT_SAVE = FALSE)` to set this globally for
+the current session.}
 }
 \value{
 Invisibly returns the paths to the saved plots
